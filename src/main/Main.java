@@ -1,23 +1,17 @@
 package main;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+
 import domain.Funcionario;
-import domain.Pessoa;
+import util.Util;
 
 public class Main {
 
 	public static void main(String[] args) {
 
+		
 		List<Funcionario> funcionarios = new ArrayList<>();
 
 		// 3.1 – Inserir todos os funcionários, na mesma ordem e informações da tabela
@@ -34,115 +28,38 @@ public class Main {
 		funcionarios.add(new Funcionario("Helena", "02/09/1996", new BigDecimal("2799.93"), "Gerente"));
 
 		// 3.2 – Remover o funcionário “João” da lista.
-		Iterator<Funcionario> iterator = funcionarios.iterator();
-		while (iterator.hasNext()) {
-			Funcionario funcionario = iterator.next();
-			if (funcionario.getNome().equals("João")) {
-				iterator.remove();
-			}
-		}
+		String funcionarioARemover = "João";
+		Util.removerFuncionario(funcionarios, funcionarioARemover);
 
 		// 3.3 – Imprimir todos os funcionários com todas suas informações
-		for (Funcionario funcionario : funcionarios) {
-			System.out.println(funcionario);
-		}
-
-		System.out.println("--------------------------");
+		Util.imprimeFuncionario(funcionarios);
 
 		// 3.4 – Os funcionários receberam 10% de aumento de salário, atualizar a lista
 		// de funcionários com novo valor.
+		Util.calcularAumentoDeSalario(funcionarios);
 
-		for (Funcionario funcionario : funcionarios) {
-			BigDecimal salarioAtual = funcionario.getSalario();
-			BigDecimal aumentoSalario = salarioAtual.multiply(new BigDecimal("0.10"));
-			BigDecimal novoSalario = salarioAtual.add(aumentoSalario);
-			funcionario.setSalario(novoSalario);
-		}
-
-		for (Funcionario funcionario : funcionarios) {
-			System.out.println("Funcionarios com o salário atualizado: " + funcionario);
-		}
+		// 3.5 – Agrupar os funcionários por função em um MAP / 3.6 – Imprimir os
+		// funcionários, agrupados por função.
+		Util.agruparFuncionario(funcionarios);
 		
-		System.out.println("--------------------------");
-
-		// 3.5 – Agrupar os funcionários por função em um MAP.
-		Map<String, List<Funcionario>> funcionariosAgrupadosPorFuncao = new HashMap<>();
-
-		for (Funcionario funcionario : funcionarios) {
-			String funcao = funcionario.getFuncao();
-			List<Funcionario> listaPorFuncao = funcionariosAgrupadosPorFuncao.getOrDefault(funcao, new ArrayList<>());
-			listaPorFuncao.add(funcionario);
-			funcionariosAgrupadosPorFuncao.put(funcao, listaPorFuncao);
-		}
-
-		// 3.6 – Imprimir os funcionários, agrupados por função.
-		System.out.println("Funcionários, agrupados por função:");
-		for (Map.Entry<String, List<Funcionario>> entry : funcionariosAgrupadosPorFuncao.entrySet()) {
-			System.out.println("Função: " + entry.getKey());
-			for (Funcionario funcionario : entry.getValue()) {
-				System.out.println("- " + funcionario.getNome());
-			}
-
-		}
-		System.out.println("--------------------------");
-
+		//3.8 – Imprimir os funcionários que fazem aniversário no mês 10 e 12.
+			Util.funcionarioOutubroDezembro(funcionarios);
+			
 		// 3.9 – Imprimir o funcionário com a maior idade, exibir os atributos: nome e
 		// idade.
-		Funcionario funcionarioMaisVelho = null;
-		LocalDate dataAtual = LocalDate.now();
-		int idadeFuncionarioMaisVelho = Integer.MIN_VALUE;
-
-		for (Funcionario funcionario : funcionarios) {
-			LocalDate dataNascimentoFuncionario = funcionario.getDataNascimento();
-			int idadeFuncionario = Period.between(dataNascimentoFuncionario, dataAtual).getYears();
-
-			if (idadeFuncionario > idadeFuncionarioMaisVelho) {
-				idadeFuncionarioMaisVelho = idadeFuncionario;
-				funcionarioMaisVelho = funcionario;
-			}
-		}
-
-		if (funcionarioMaisVelho != null) {
-			System.out.println("O funcionário mais velho é " + funcionarioMaisVelho.getNome() + " com "
-					+ idadeFuncionarioMaisVelho + " anos de idade.");
-		} else {
-			System.out.println("Não há funcionários na lista.");
-		}
-
-		System.out.println("--------------------------");
+		Util.funcionarioMaisVelho(funcionarios);
 
 		// 3.10 – Imprimir a lista de funcionários por ordem alfabética.
-		funcionarios.sort(Comparator.comparing(Funcionario::getNome));
-
-		System.out.println("Lista ordenada por ordem alfabética:");
-		for (Funcionario funcionario : funcionarios) {
-			System.out.println(funcionario);
-		}
-
-		System.out.println("--------------------------");
+		Util.ordenaLista(funcionarios);
 
 		// 3.11 – Imprimir o total dos salários dos funcionários.
-		BigDecimal totalSalario = BigDecimal.ZERO;
-
-		for (Funcionario funcionario : funcionarios) {
-			totalSalario = totalSalario.add(funcionario.getSalario());
-		}
-
-		System.out.println("Soma salário funcionários: " + totalSalario);
-
-		System.out.println("--------------------------");
+		Util.somaSalarios(funcionarios);
 
 		/*
 		 * 3.12 – Imprimir quantos salários mínimos ganha cada funcionário, considerando
 		 * que o salário mínimo é R$1212.00.
 		 */
-
-		BigDecimal salarioMinimoAtual = new BigDecimal("1212.00");
-		for (Funcionario funcionario : funcionarios) {
-			BigDecimal salarioMinimoFuncionario = funcionario.getSalario().divide(salarioMinimoAtual, 2,
-					RoundingMode.HALF_UP);
-			System.out.println(funcionario.getNome() + " salários mínimos: " + salarioMinimoFuncionario);
-		}
+		Util.imprimeSalarioCadaFuncionario(funcionarios);
 
 	}
 
